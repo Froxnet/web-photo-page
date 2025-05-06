@@ -1,4 +1,4 @@
-const screenTablet = window.matchMedia("(max-width: 768px)").matches
+const screenTablet = window.matchMedia("(max-width: 1080px)").matches
 
 const tab = document.getElementsByClassName('tab');
 const navpanel = document.getElementById('navpanel')
