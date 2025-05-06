@@ -110,3 +110,22 @@ padding: 0rem 0.5rem;
     width: 20vw;
   }
 }
+
+@media only screen and (orientation: landscape) and (max-width: 900px){
+  #mainpanel {
+    flex-direction: row;
+  }
+  #navpanel {
+    position: absolute;
+    display: none;
+  }
+  .zoomed {
+    height: 100vh;
+    width: fit-content;
+  }
+  #panel {
+    height: 100vh;
+    width: fit-content;
+    flex-direction: column;
+  }
+}
