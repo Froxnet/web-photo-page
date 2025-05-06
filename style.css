@@ -128,4 +128,7 @@ padding: 0rem 0.5rem;
     width: fit-content;
     flex-direction: column;
   }
+  #panel > img {
+    width: 15vw;
+  }
 }
