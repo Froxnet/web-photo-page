@@ -1,80 +1,96 @@
-const screenTablet = window.matchMedia("(max-width: 1080px)").matches
-
-const tab = document.getElementsByClassName('tab');
-const navpanel = document.getElementById('navpanel')
-const tabs = ["2020", "2021", "2022", "2023", "2024"];
-
+//main element
+const nav = document.getElementById("tag-panel");
 const photo = document.getElementById("photo");
+const list = document.getElementById("list");
 
-const panel = document.getElementById("panel");
-const main = document.getElementById("main");
-const mainImg = document.getElementsByClassName("zoomed");
-let album = "2020";
+//for eventlistener
+const tagList = document.getElementsByClassName("tag")
+const photoList = document.getElementsByClassName("card");
 
+const dbTag = [
+  '2020',
+  '2021', 
+  '2022', 
+  '2023', 
+  '2024', 
+];
 
-const screenCheck = () => {
-  if (screenTablet) {
-    panel.addEventListener("wheel", (event) => {
-      if (event.deltaY !==0) {
-        panel.scrollLeft += event.deltaY;
-      }
-    }, {passive: false});
-  } 
+//database open
+let db = null;
+initSqlJs({
+  locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+}).then(async SQL => {
+  const response = await fetch('data');
+  const buffer = await response.arrayBuffer();
+  db = new SQL.Database(new Uint8Array(buffer));
+});
+
+//select tag from database
+const getData = (tag) => {
+  if (!db) {
+    console.log("data loading");
+    return;
+  }
+  try {
+    const result = db.exec(`SELECT * FROM Media WHERE Tag='${tag}'`);
+    if (result.length === 0 || result[0].values.length === 0) {
+      console.log("not tag");
+      return;
+    }
+    const rows = result[0].values;
+    return rows;
+  } catch (e) {
+    console.log("error");
+    return;
+  }
 };
 
-screenCheck();
-
-window.addEventListener("resize", screenCheck())
-
-// Tabs 2020~2024 years
-addTab = () => {
-  for (let i = 0; i < tabs.length; i++){
+// for creat tag list
+const addTab = () => { 
+  for (let i = 0; i < dbTag.length; i++){
     const newDiv = document.createElement('div');
-    newDiv.textContent = tabs[i];
-    newDiv.className = 'tab';
+    newDiv.textContent = dbTag[i];
+    newDiv.className = 'tag';
     newDiv.setAttribute('data-index', i);
-    navpanel.appendChild(newDiv);
-  };
-  Array.from(tab).forEach((e) => {
+    nav.appendChild(newDiv);
+  }
+};
+
+const events = () => {
+  Array.from(tagList).forEach((e) => {
     e.addEventListener('click', () => {
-      const tabIndex = e.getAttribute('data-index');
-      album = tabs[tabIndex];
-      Array.from(tab).forEach((e) => {e.classList.remove("current")});
+      const Index = e.getAttribute('data-index');
+      list.innerHTML = "";
+      const Spisok = getData(dbTag[Index]);
+      for (let i = 0; i < Spisok.length; i++){
+        const newDiv = document.createElement('img');
+        // const newSpan = document.createElement('span');
+        newDiv.className = 'card';
+        newDiv.src = Spisok[i][3];
+        newDiv.setAttribute('data-index', i);
+        // newDiv.setAttribute('tag-index', Spisok.length);
+        // newSpan.textContent = Spisok[i][2] + " - " + Spisok[i][3];
+        list.appendChild(newDiv);
+      };
+      Array.from(photoList).forEach((e) => {
+        e.addEventListener('click', () => {
+          const Index = e.getAttribute('data-index');
+          const tagIndex = e.getAttribute('tag-index')
+          photo.setAttribute('data-index', Index);
+          photo.setAttribute('data-index', tagIndex);
+          photo.src = Spisok[Index][2];
+          photo.load();
+          photo.play();
+          Array.from(photoList).forEach((e) => {e.classList.remove("current")});
+          e.classList.toggle("current");
+        })
+      })
+      Array.from(tagList).forEach((e) => {e.classList.remove("current")});
       e.classList.toggle("current");
-      addImg();
     });
   });
 };
-
+      
 addTab();
-
-imgEvent = () => {
-    let imgList = document.getElementsByClassName('jpeg');
-    Array.from(imgList).forEach((e) => {
-    e.addEventListener('click', () => {
-      const i = e.getAttribute('data-index'); 
-      main.innerHTML = "";
-      const newDiv = document.createElement("img");
-      newDiv.className = 'zoomed'
-      newDiv.setAttribute('data-index', i)
-      newDiv.src = album + "\\" + i + '.jpg';
-      main.appendChild(newDiv);
-      Array.from(imgList).forEach((e) => {e.classList.remove("current")});
-      e.classList.toggle("current");
-    });
-  });
-};
-
-addImg = () => {
-    panel.innerHTML = '';
-    for (let i = 0; i < 10; i++){
-      const newDiv = document.createElement("img");
-      newDiv.className = 'jpeg'
-      newDiv.setAttribute('data-index', i)
-      newDiv.src = album + "\\" + i + '.jpg';
-      panel.appendChild(newDiv);
-    };
-    imgEvent()
-};
-  
-addImg();
+events();
+// events();
