@@ -5,16 +5,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlbumJapan</title>
 	<link rel="stylesheet" href="style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
 </head>
 <body>
-	<div id="navpanel"></div>
-	<div id="mainpanel">
-		<div id="main">
-			<img class="zoomed" 
-				 src="2020/0.jpg" 
-				 alt="photo">
-		</div>
-		<div id="panel"></div>
+	<div id="tag-panel"></div>
+	<div id="photo-list">
+		<img id="photo" src="img/2020/001.jpg">
+		<div id="list"></div>
 	</div>
 	<script src="script.js"></script>
 </body>
