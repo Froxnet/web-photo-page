@@ -1,5 +1,5 @@
 //main element
-const nav = document.getElementById("tag-panel");
+const nav = document.getElementById("nav");
 const photo = document.getElementById("photo");
 const list = document.getElementById("list");
 
@@ -13,6 +13,7 @@ const dbTag = [
   '2022', 
   '2023', 
   '2024', 
+  '2025'
 ];
 
 //database open
@@ -79,14 +80,12 @@ const events = () => {
           photo.setAttribute('data-index', Index);
           photo.setAttribute('data-index', tagIndex);
           photo.src = Spisok[Index][2];
-          photo.load();
-          photo.play();
-          Array.from(photoList).forEach((e) => {e.classList.remove("current")});
-          e.classList.toggle("current");
+          Array.from(photoList).forEach((e) => {e.classList.remove("currentIMG")});
+          e.classList.toggle("currentIMG");
         })
       })
-      Array.from(tagList).forEach((e) => {e.classList.remove("current")});
-      e.classList.toggle("current");
+      Array.from(tagList).forEach((e) => {e.classList.remove("currentTAB")});
+      e.classList.toggle("currentTAB");
     });
   });
 };
